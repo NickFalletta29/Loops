@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Loops</string>
+    <string name="event_name_date">Event Name - Event Date</string>
+    <string name="learn_more">Learn More</string>
+    <string name="dialog_title">Event Details</string>
+    <string name="join">Join</string>
+    <string name="cancel">Cancel</string>
+    <string name="join_message">You joined</string>
+    <string name="popular">Popular</string>
+    <string name="recent">Recent</string>
+</resources>
