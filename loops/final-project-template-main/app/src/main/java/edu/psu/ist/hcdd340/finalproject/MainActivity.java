@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         infoBtn = findViewById(R.id.infoBtn);
 
         currentEvents();
-        sortEventsByPopularity();
+        sortPopular();
         updateUI();
 
         infoBtn.setOnClickListener(view -> showEventInfo());
@@ -148,23 +148,23 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.popular:
-                sortEventsByPopularity();
+                sortPopular();
                 return true;
             case R.id.recent:
-                sortEventsByDate();
+                sortDate();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    private void sortEventsByPopularity() {
+    private void sortPopular() {
         Collections.sort(eventList, (e1, e2) -> Integer.compare(e2.getAttendees(), e1.getAttendees()));
         currentIndex = 0;
         updateUI();
     }
 
-    private void sortEventsByDate() {
+    private void sortDate() {
         Collections.sort(eventList, (e1, e2) -> e1.getDate().compareTo(e2.getDate()));
         currentIndex = 0;
         updateUI();
