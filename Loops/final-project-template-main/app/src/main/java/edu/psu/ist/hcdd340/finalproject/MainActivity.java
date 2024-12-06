@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.snackbar.Snackbar;
 
 import android.annotation.SuppressLint;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,11 +26,15 @@ public class MainActivity extends AppCompatActivity {
     private ImageView eventImage;
     private TextView eventInfo;
     private Button infoBtn;
+    private SharedPreferences sharedPreferences;
+    private static final String JOINED_EVENTS_KEY = "joined_events";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        sharedPreferences = getSharedPreferences("EventPrefs", MODE_PRIVATE);
 
         eventImage = findViewById(R.id.eventImage);
         eventInfo = findViewById(R.id.eventInfo);
@@ -60,38 +65,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void currentEvents() {
         eventList = new ArrayList<>();
-        eventList.add(new Event(
-                "Old Main Hangout",
-                "12/5/24",
-                "3:00 PM",
-                "Looking for people to hang out with at Old Main!",
-                7,
-                R.drawable.old_main
-        ));
-        eventList.add(new Event(
-                "IM Soccer",
-                "12/6/24",
-                "7:00 PM",
-                "Need a bunch of people for a soccer tournament",
-                8,
-                R.drawable.soccer
-        ));
-        eventList.add(new Event(
-                "Football Game",
-                "11/9/24",
-                "8:00 PM",
-                "Anyone want to join me for the White Out?",
-                9,
-                R.drawable.game
-        ));
-        eventList.add(new Event(
-                "Dinner at South",
-                "12/4/24",
-                "5:30 PM",
-                "Anyone want to grab dinner with me?",
-                10,
-                R.drawable.dining
-        ));
+        eventList.add(new Event("Old Main Hangout", "12/5/24", "3:00 PM", "Looking for people to hang out with at Old Main!", 7, R.drawable.old_main));
+        eventList.add(new Event("IM Soccer", "12/6/24", "7:00 PM", "Need a bunch of people for a soccer tournament", 8, R.drawable.soccer));
+        eventList.add(new Event("Football Game", "11/9/24", "8:00 PM", "Anyone want to join me for the White Out?", 9, R.drawable.game));
+        eventList.add(new Event("Dinner at South", "12/4/24", "5:30 PM", "Anyone want to grab dinner with me?", 10, R.drawable.dining));
     }
 
     private void updateUI() {
@@ -117,24 +94,33 @@ public class MainActivity extends AppCompatActivity {
     private void showEventInfo() {
         Event currentEvent = eventList.get(currentIndex);
 
+        boolean isJoined = sharedPreferences.getBoolean(JOINED_EVENTS_KEY + currentIndex, false);
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(currentEvent.getName())
-                .setMessage(
-                        getString(R.string.dialog_title) +
-                                "\n\nDate: " + currentEvent.getDate() +
-                                "\nTime: " + currentEvent.getTime() +
-                                "\n\nDescription: " + currentEvent.getDescription() +
-                                "\n\nAttendees: " + currentEvent.getAttendees()
-                )
-                .setPositiveButton(getString(R.string.join), (dialog, which) -> {
-                    Snackbar.make(
-                            findViewById(R.id.infoBtn),
-                            getString(R.string.join_message) + " " + currentEvent.getName(),
-                            Snackbar.LENGTH_SHORT
-                    ).show();
-                })
-                .setNegativeButton(getString(R.string.cancel), null)
-                .show();
+        builder.setTitle(currentEvent.getName() + (isJoined ? " - JOINED!" : ""))
+                .setMessage("Date: " + currentEvent.getDate() +
+                        "\nTime: " + currentEvent.getTime() +
+                        "\n\nDescription: " + currentEvent.getDescription() +
+                        "\n\nPeople Joined: " + currentEvent.getAttendees())
+                .setNegativeButton(getString(R.string.cancel), null);
+
+        if (isJoined) {
+            builder.setPositiveButton(getString(R.string.leave), (dialog, which) -> {
+                currentEvent.decreaseAttendees();
+                sharedPreferences.edit().remove(JOINED_EVENTS_KEY + currentIndex).apply();
+                Snackbar.make(findViewById(R.id.infoBtn), "You left the event.", Snackbar.LENGTH_SHORT).show();
+                updateUI();
+            });
+        } else {
+            builder.setPositiveButton(getString(R.string.join), (dialog, which) -> {
+                currentEvent.increaseAttendees();
+                sharedPreferences.edit().putBoolean(JOINED_EVENTS_KEY + currentIndex, true).apply();
+                Snackbar.make(findViewById(R.id.infoBtn), "You joined the event!", Snackbar.LENGTH_SHORT).show();
+                updateUI();
+            });
+        }
+
+        builder.show();
     }
 
     @Override
@@ -207,7 +193,14 @@ public class MainActivity extends AppCompatActivity {
         public int getImageResId() {
             return imageResId;
         }
+
+        public void increaseAttendees() {
+            attendees++;
+        }
+
+        public void decreaseAttendees() {
+            if (attendees > 0) attendees--;
+        }
     }
 }
-
 
