@@ -9,4 +9,8 @@
     <string name="popular">Popular</string>
     <string name="recent">Recent</string>
     <string name="leave">Leave</string>
+    <string name="create_event_title">Title</string>
+    <string name="create_event_date">Date\n</string>
+    <string name="create_event_time">Time</string>
+    <string name="create_event_description">Description\n</string>
 </resources>
