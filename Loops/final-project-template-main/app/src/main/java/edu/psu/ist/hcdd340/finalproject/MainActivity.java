@@ -1,10 +1,14 @@
 package edu.psu.ist.hcdd340.finalproject;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.snackbar.Snackbar;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
@@ -26,25 +30,48 @@ public class MainActivity extends AppCompatActivity {
     private ImageView eventImage;
     private TextView eventInfo;
     private Button infoBtn;
+    private Button createEventBtn;
     private SharedPreferences sharedPreferences;
     private static final String JOINED_EVENTS_KEY = "joined_events";
 
+    private ActivityResultLauncher<Intent> createEventLauncher;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         sharedPreferences = getSharedPreferences("EventPrefs", MODE_PRIVATE);
+        createEventLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        // Retrieve the event data
+                        String title = result.getData().getStringExtra("eventTitle");
+                        String description = result.getData().getStringExtra("eventDescription");
+                        String date = result.getData().getStringExtra("eventDate");
+                        String time = result.getData().getStringExtra("eventTime");
+
+                        // Add the new event to the list
+                        eventList.add(new Event(title, date, time, description, 0, R.drawable.old_main));
+                        updateUI();
+                    }
+                }
+        );
 
         eventImage = findViewById(R.id.eventImage);
         eventInfo = findViewById(R.id.eventInfo);
         infoBtn = findViewById(R.id.infoBtn);
+        createEventBtn = findViewById(R.id.createEventButton);
 
         currentEvents();
         sortPopular();
         updateUI();
 
         infoBtn.setOnClickListener(view -> showEventInfo());
+        createEventBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, CreateEventActivity.class);
+            createEventLauncher.launch(intent);
+        });
 
         eventImage.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -75,6 +102,11 @@ public class MainActivity extends AppCompatActivity {
         Event currentEvent = eventList.get(currentIndex);
         eventImage.setImageResource(currentEvent.getImageResId());
         eventInfo.setText(currentEvent.getName() + " - " + currentEvent.getDate());
+
+    }
+
+    public void addEvent(){
+
     }
 
     private void nextEvent() {
@@ -169,6 +201,8 @@ public class MainActivity extends AppCompatActivity {
             this.attendees = attendees;
             this.imageResId = imageResId;
         }
+
+
 
         public String getName() {
             return name;

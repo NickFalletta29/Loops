@@ -9,13 +9,143 @@
     <string name="popular">Popular</string>
     <string name="recent">Recent</string>
     <string name="leave">Leave</string>
+    <string name="add_event"> + </string>
     <string name="create_event_title">Title</string>
     <string name="create_event_date">Date\n</string>
     <string name="create_event_time">Time</string>
     <string name="create_event_description">Description\n</string>
     <string name="create_event_button">Create Event\n</string>
-    <string-array name="am_pm">
-        <item> AM </item>
-        <item> PM </item>
+        <string-array name="months">
+            <item>January</item>
+            <item>February</item>
+            <item>March</item>
+            <item>April</item>
+            <item>May</item>
+            <item>June</item>
+            <item>July</item>
+            <item>August</item>
+            <item>September</item>
+            <item>October</item>
+            <item>November</item>
+            <item>December</item>
+        </string-array>
+    <string-array name="years">
+        <item>2024</item>
+        <item>2025</item>
+        <item>2026</item>
+        <item>2027</item>
+        <item>2028</item>
+        <item>2029</item>
+        <item>2030</item>
+        <item>2031</item>
+        <item>2032</item>
+        <item>2033</item>
+        <item>2034</item>
+        <item>2035</item>
+        <item>2036</item>
+        <item>2037</item>
+        <item>2038</item>
+        <item>2039</item>
+        <item>2040</item>
+        <item>2041</item>
+        <item>2042</item>
+        <item>2043</item>
+        <item>2044</item>
+        <item>2045</item>
+        <item>2046</item>
+        <item>2047</item>
+        <item>2048</item>
+        <item>2049</item>
+        <item>2050</item>
+        <item>2051</item>
+        <item>2052</item>
+        <item>2053</item>
+        <item>2054</item>
+        <item>2055</item>
+        <item>2056</item>
+        <item>2057</item>
+        <item>2058</item>
+        <item>2059</item>
+        <item>2060</item>
+        <item>2061</item>
+        <item>2062</item>
+        <item>2063</item>
+        <item>2064</item>
+        <item>2065</item>
+        <item>2066</item>
+        <item>2067</item>
+        <item>2068</item>
+        <item>2069</item>
+        <item>2070</item>
+        <item>2071</item>
+        <item>2072</item>
+        <item>2073</item>
+        <item>2074</item>
     </string-array>
+    <string-array name="days">
+            <item>1</item>
+            <item>2</item>
+            <item>3</item>
+            <item>4</item>
+            <item>5</item>
+            <item>6</item>
+            <item>7</item>
+            <item>8</item>
+            <item>9</item>
+            <item>10</item>
+            <item>11</item>
+            <item>12</item>
+            <item>13</item>
+            <item>14</item>
+            <item>15</item>
+            <item>16</item>
+            <item>17</item>
+            <item>18</item>
+            <item>19</item>
+            <item>20</item>
+            <item>21</item>
+            <item>22</item>
+            <item>23</item>
+            <item>24</item>
+            <item>25</item>
+            <item>26</item>
+            <item>27</item>
+            <item>29</item>
+            <item>30</item>
+            <item>31</item>
+
+        </string-array>
+        <string-array name="hours">
+            <item>1</item>
+            <item>2</item>
+            <item>3</item>
+            <item>4</item>
+            <item>5</item>
+            <item>6</item>
+            <item>7</item>
+            <item>8</item>
+            <item>9</item>
+            <item>10</item>
+            <item>11</item>
+            <item>12</item>
+        </string-array>
+        <string-array name="minutes">
+            <item>00</item>
+            <item>05</item>
+            <item>10</item>
+            <item>15</item>
+            <item>20</item>
+            <item>25</item>
+            <item>30</item>
+            <item>35</item>
+            <item>40</item>
+            <item>45</item>
+            <item>50</item>
+            <item>55</item>
+        </string-array>
+        <string-array name="am_pm">
+            <item>AM</item>
+            <item>PM</item>
+        </string-array>
+
 </resources>
