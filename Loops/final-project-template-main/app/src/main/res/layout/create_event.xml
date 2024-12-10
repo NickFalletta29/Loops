@@ -7,9 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".CreateEventActivity">
 
-    <!-- App Header -->
-
-    <!-- Back Button -->
     <ImageButton
         android:id="@+id/backButton"
         android:layout_width="55dp"
@@ -21,7 +18,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Info Button -->
     <ImageButton
         android:id="@+id/infoButton"
         android:layout_width="40dp"
@@ -31,11 +27,7 @@
         android:background="?android:attr/selectableItemBackground"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_margin="8dp"/>
-
-    <!-- Event Image Placeholder -->
-
-    <!-- Title Field -->
+        android:layout_margin="8dp" />
 
     <ImageView
         android:id="@+id/eventImage"
@@ -45,7 +37,6 @@
         android:contentDescription="Event Image"
         android:src="@drawable/ic_image_placeholder"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -54,7 +45,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/create_event_title"
-        android:textSize="20dp"
+        android:textSize="20sp"
         app:layout_constraintTop_toBottomOf="@id/eventImage"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="16dp"
@@ -70,51 +61,28 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginHorizontal="16dp" />
 
-    <!-- Date Field -->
     <TextView
         android:id="@+id/dateLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/create_event_date"
-        android:textSize="20dp"
+        android:textSize="20sp"
         app:layout_constraintTop_toBottomOf="@id/titleInput"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp" />
 
-    <LinearLayout
+    <EditText
+        android:id="@+id/dateInput"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:hint="Select Date"
+        android:focusable="false"
+        android:clickable="true"
+        android:layout_marginHorizontal="16dp"
         app:layout_constraintTop_toBottomOf="@id/dateLabel"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginVertical="-10dp">
-
-        <Spinner
-            android:id="@+id/monthSpinner"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:entries="@array/months"/>
-
-        <Spinner
-            android:id="@+id/daySpinner"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:entries="@array/days"/>
-
-        <Spinner
-            android:id="@+id/yearInput"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:entries="@array/years" />
-    </LinearLayout>
-
-    <!-- Time Field -->
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
         android:id="@+id/timeLabel"
@@ -123,77 +91,62 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:text="@string/create_event_time"
-        android:textSize="20dp"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/dateLabel" />
+        app:layout_constraintTop_toBottomOf="@id/dateInput" />
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/timeLabel"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginHorizontal="16dp"
-        android:layout_marginVertical="10dp">
+        android:layout_marginVertical="10dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/timeLabel">
 
         <Spinner
             android:id="@+id/hourSpinner"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:entries="@array/hours"/>
+            android:layout_weight="1" />
 
         <Spinner
             android:id="@+id/minuteSpinner"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:entries="@array/minutes"/>
+            android:layout_weight="1" />
 
         <Spinner
             android:id="@+id/amPmSpinner"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:entries="@array/am_pm" />
+            android:layout_height="wrap_content" />
     </LinearLayout>
-
-    <!-- Description Field -->
-
-    <!-- Create Event Button -->
-    <TextView
-        android:id="@+id/descriptionLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="72dp"
-        android:text="@string/create_event_description"
-        android:textSize="20dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/timeLabel" />
 
     <EditText
         android:id="@+id/descriptionInput"
         android:layout_width="0dp"
-        android:layout_height="100dp"
+        android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="32dp"
         android:gravity="top"
         android:hint="Enter description"
         android:inputType="textMultiLine"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/descriptionLabel" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
     <Button
         android:id="@+id/createEventButton"
         android:layout_width="161dp"
         android:layout_height="63dp"
-        android:layout_marginTop="16dp"
-        android:text="Create Event"
+        android:layout_marginTop="32dp"
         android:backgroundTint="@color/sky_blue"
+        android:text="Create Event"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/descriptionInput" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+

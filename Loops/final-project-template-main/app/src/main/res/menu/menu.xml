@@ -1,10 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <item
         android:id="@+id/popular"
         android:icon="@android:drawable/ic_dialog_info"
-        android:title="@string/popular" />
+        android:title="@string/popular"
+        app:showAsAction="never" />
     <item
         android:id="@+id/recent"
-        android:title="@string/recent" />
+        android:title="@string/recent"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/createEvent"
+        android:icon="@android:drawable/ic_input_add"
+        android:title="@string/add_event"
+        android:iconTint="@color/white"
+        app:showAsAction="always" />
 </menu>

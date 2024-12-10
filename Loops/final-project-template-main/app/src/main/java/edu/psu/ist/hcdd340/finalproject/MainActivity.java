@@ -1,5 +1,7 @@
 package edu.psu.ist.hcdd340.finalproject;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
@@ -10,7 +12,9 @@ import com.google.android.material.snackbar.Snackbar;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -30,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
     private ImageView eventImage;
     private TextView eventInfo;
     private Button infoBtn;
-    private Button createEventBtn;
     private SharedPreferences sharedPreferences;
     private static final String JOINED_EVENTS_KEY = "joined_events";
 
@@ -45,33 +48,35 @@ public class MainActivity extends AppCompatActivity {
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        // Retrieve the event data
                         String title = result.getData().getStringExtra("eventTitle");
                         String description = result.getData().getStringExtra("eventDescription");
                         String date = result.getData().getStringExtra("eventDate");
                         String time = result.getData().getStringExtra("eventTime");
+                        int img = 0;
 
-                        // Add the new event to the list
-                        eventList.add(new Event(title, date, time, description, 0, R.drawable.old_main));
+                        try {
+                            img = Integer.parseInt(result.getData().getStringExtra("eventImage"));
+                        } catch (NumberFormatException e) {
+                            eventList.add(new Event(title, date, time, description, 0, R.drawable.lion));
+                            updateUI();
+                        }
+
+                        eventList.add(new Event(title, date, time, description, 0, R.drawable.lion));
                         updateUI();
                     }
                 }
         );
 
+
         eventImage = findViewById(R.id.eventImage);
         eventInfo = findViewById(R.id.eventInfo);
         infoBtn = findViewById(R.id.infoBtn);
-        createEventBtn = findViewById(R.id.createEventButton);
 
         currentEvents();
         sortPopular();
         updateUI();
 
         infoBtn.setOnClickListener(view -> showEventInfo());
-        createEventBtn.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, CreateEventActivity.class);
-            createEventLauncher.launch(intent);
-        });
 
         eventImage.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -170,6 +175,11 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.recent:
                 sortDate();
+                return true;
+            case R.id.createEvent:
+                // Handle the create event action
+                Intent intent = new Intent(MainActivity.this, CreateEventActivity.class);
+                createEventLauncher.launch(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
