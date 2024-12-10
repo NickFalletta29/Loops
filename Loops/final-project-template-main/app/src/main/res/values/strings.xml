@@ -13,4 +13,9 @@
     <string name="create_event_date">Date\n</string>
     <string name="create_event_time">Time</string>
     <string name="create_event_description">Description\n</string>
+    <string name="create_event_button">Create Event\n</string>
+    <string-array name="am_pm">
+        <item> AM </item>
+        <item> PM </item>
+    </string-array>
 </resources>
