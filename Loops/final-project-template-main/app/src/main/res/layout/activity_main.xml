@@ -49,6 +49,7 @@
         android:id="@+id/infoBtn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="55dp"
         android:background="@color/black"
         android:text="@string/learn_more"
         android:textColor="@color/white"
@@ -56,5 +57,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/eventImage" />
+
+    <FrameLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:layout_constraintBottom_toBottomOf="@+id/container"
+        app:layout_constraintTop_toBottomOf="@+id/infoBtn"
+        app:menu="@menu/tasbar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

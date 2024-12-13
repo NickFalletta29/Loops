@@ -4,9 +4,13 @@ import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
 import android.annotation.SuppressLint;
@@ -38,6 +42,17 @@ public class MainActivity extends AppCompatActivity {
     private static final String JOINED_EVENTS_KEY = "joined_events";
 
     private ActivityResultLauncher<Intent> createEventLauncher;
+
+    private static ArrayList<Event> myEventsList = new ArrayList<>();
+    public static void addToMyEvents(Event event) {
+        if (!myEventsList.contains(event)) {
+            myEventsList.add(event);
+        }
+    }
+
+    public static ArrayList<Event> getMyEventsList() {
+        return myEventsList;
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,20 +67,31 @@ public class MainActivity extends AppCompatActivity {
                         String description = result.getData().getStringExtra("eventDescription");
                         String date = result.getData().getStringExtra("eventDate");
                         String time = result.getData().getStringExtra("eventTime");
-                        int img = 0;
+                        int img = R.drawable.lion;
 
                         try {
                             img = Integer.parseInt(result.getData().getStringExtra("eventImage"));
                         } catch (NumberFormatException e) {
-                            eventList.add(new Event(title, date, time, description, 0, R.drawable.lion));
-                            updateUI();
+                            Log.e(TAG, "Error parsing event image ID, using default.");
                         }
 
-                        eventList.add(new Event(title, date, time, description, 0, R.drawable.lion));
+                        Event newEvent = new Event(title, date, time, description, 0, img);
+
+
+                        eventList.add(newEvent);
+
+                        String eventKey = JOINED_EVENTS_KEY + "_" + newEvent.getName() + "_" + newEvent.getDate();
+                        sharedPreferences.edit().putBoolean(eventKey, true).apply();
+
+                        addToMyEvents(newEvent);
                         updateUI();
+                        Snackbar.make(findViewById(R.id.infoBtn), "Event created and joined successfully!", Snackbar.LENGTH_SHORT).show();
                     }
                 }
         );
+
+
+
 
 
         eventImage = findViewById(R.id.eventImage);
@@ -93,6 +119,36 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+        loadFragment(new HomeFragment());
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            Fragment selectedFragment = null;
+            switch (item.getItemId()) {
+                case R.id.nav_home:
+                    selectedFragment = new HomeFragment();
+                    break;
+                case R.id.nav_my_events:
+                    selectedFragment = new MyEventsFragment();
+                    break;
+                // Other cases
+            }
+            return loadFragment(selectedFragment);
+        });
+
+
+    }
+
+
+    private boolean loadFragment(Fragment fragment) {
+        if (fragment != null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.container, fragment)
+                    .commit();
+            return true;
+        }
+        return false;
     }
 
     private void currentEvents() {
@@ -105,10 +161,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateUI() {
         Event currentEvent = eventList.get(currentIndex);
-        eventImage.setImageResource(currentEvent.getImageResId());
-        eventInfo.setText(currentEvent.getName() + " - " + currentEvent.getDate());
+        String eventKey = JOINED_EVENTS_KEY + "_" + currentEvent.getName() + "_" + currentEvent.getDate();
+        boolean isJoined = sharedPreferences.getBoolean(eventKey, false);
 
+        eventImage.setImageResource(currentEvent.getImageResId());
+        eventInfo.setText(currentEvent.getName() + " - " + currentEvent.getDate() + (isJoined ? " (JOINED)" : ""));
     }
+
 
     public void addEvent(){
 
@@ -118,6 +177,8 @@ public class MainActivity extends AppCompatActivity {
         if (currentIndex < eventList.size() - 1) {
             currentIndex++;
             updateUI();
+            Log.d("MyEventsFragment", "myEventsList size: " + myEventsList.size());
+
         }
     }
 
@@ -131,7 +192,11 @@ public class MainActivity extends AppCompatActivity {
     private void showEventInfo() {
         Event currentEvent = eventList.get(currentIndex);
 
-        boolean isJoined = sharedPreferences.getBoolean(JOINED_EVENTS_KEY + currentIndex, false);
+        // Generate a unique key for the event based on its name and date
+        String eventKey = JOINED_EVENTS_KEY + "_" + currentEvent.getName() + "_" + currentEvent.getDate();
+
+        // Check if the event is already joined
+        boolean isJoined = sharedPreferences.getBoolean(eventKey, false);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(currentEvent.getName() + (isJoined ? " - JOINED!" : ""))
@@ -142,16 +207,30 @@ public class MainActivity extends AppCompatActivity {
                 .setNegativeButton(getString(R.string.cancel), null);
 
         if (isJoined) {
+            // Option to leave the event
             builder.setPositiveButton(getString(R.string.leave), (dialog, which) -> {
                 currentEvent.decreaseAttendees();
-                sharedPreferences.edit().remove(JOINED_EVENTS_KEY + currentIndex).apply();
+
+                // Remove the event from SharedPreferences
+                sharedPreferences.edit().remove(eventKey).apply();
+
+                // Remove the event from "My Events" list
+                myEventsList.remove(currentEvent);
+
                 Snackbar.make(findViewById(R.id.infoBtn), "You left the event.", Snackbar.LENGTH_SHORT).show();
                 updateUI();
             });
         } else {
+            // Option to join the event
             builder.setPositiveButton(getString(R.string.join), (dialog, which) -> {
                 currentEvent.increaseAttendees();
-                sharedPreferences.edit().putBoolean(JOINED_EVENTS_KEY + currentIndex, true).apply();
+
+                // Mark the event as joined in SharedPreferences
+                sharedPreferences.edit().putBoolean(eventKey, true).apply();
+
+                // Add the event to "My Events" list
+                addToMyEvents(currentEvent);
+
                 Snackbar.make(findViewById(R.id.infoBtn), "You joined the event!", Snackbar.LENGTH_SHORT).show();
                 updateUI();
             });
@@ -159,6 +238,24 @@ public class MainActivity extends AppCompatActivity {
 
         builder.show();
     }
+
+
+    private void saveEventToSharedPrefs(Event event) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        String eventJson = String.format("{\"name\":\"%s\",\"date\":\"%s\",\"time\":\"%s\",\"description\":\"%s\",\"attendees\":%d,\"imageResId\":%d}",
+                event.getName(), event.getDate(), event.getTime(), event.getDescription(), event.getAttendees(), event.getImageResId());
+        editor.putString(event.getName() + "_" + event.getDate(), eventJson);
+        editor.apply();
+    }
+
+    private void removeEventFromSharedPrefs(Event event) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove(event.getName() + "_" + event.getDate());
+        editor.apply();
+    }
+
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -198,7 +295,7 @@ public class MainActivity extends AppCompatActivity {
         updateUI();
     }
 
-    public class Event {
+    public static class Event {
         private String name, date, time, description;
         private int attendees;
         private int imageResId;

@@ -132,19 +132,24 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
 
         String time = hour + ":" + minute + " " + amPm;
 
-        Log.d(TAG, "Event Created: " + title + ", " + description + ", Date: " + date + ", Time: " + time);
+        MainActivity.Event newEvent = new MainActivity.Event(title, date, time, description, 0, R.drawable.lion);
 
         // Send back to MainActivity
         Intent intent = new Intent();
-        intent.putExtra("eventTitle", title);
-        intent.putExtra("eventDescription", description);
-        intent.putExtra("eventDate", date);
+        intent.putExtra("eventTitle", titleInput.getText().toString());
+        intent.putExtra("eventDescription", descriptionInput.getText().toString());
+        intent.putExtra("eventDate", dateInput.getText().toString());
         intent.putExtra("eventTime", time);
-        intent.putExtra("eventImage", String.valueOf(img));
+        intent.putExtra("eventImage", img);
+
+        SharedPreferences sharedPreferences = getSharedPreferences("EventPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(title + "_" + date, String.format("{\"name\":\"%s\",\"date\":\"%s\",\"time\":\"%s\",\"description\":\"%s\",\"attendees\":0,\"imageResId\":%d}",
+                title, date, time, description, R.drawable.lion));
+        editor.apply();
 
         setResult(RESULT_OK, intent);
-
-        clearInputs();
+        finish();
 
         Snackbar.make(findViewById(R.id.createEventButton), "New Event created!", Snackbar.LENGTH_LONG).show();
     }
